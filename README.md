@@ -1,6 +1,6 @@
-# contacts
+# Contatos
 
-contacts - Esta aplicação serve para validar meus conhecimentos nas variadas ferramentas encontradas e/ou relacionadas ao ecossistema Vue.js
+Esta aplicação serve para validar meus conhecimentos nas variadas ferramentas encontradas e/ou relacionadas ao ecossistema Vue.js
 
 ## Technologies
 
@@ -19,4 +19,4 @@ Projeto/aplicação baseado num arquivo somente: index.html, utilizando as bibli
 ```
 --- 
 
-[Envie-me uma mensagem](mailto:programador.leandrolopes@gmail.com "Envie-me uma mensagem") para mais informações sobre o <b>contacts</b>. 
+[Envie-me uma mensagem](mailto:programador.leandrolopes@gmail.com "Envie-me uma mensagem") para mais informações sobre o <b>Contatos</b>. 

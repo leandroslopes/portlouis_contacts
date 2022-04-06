@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+  <title>Contatos</title>
+</head>
+<body>
+  <div 
+    id="app"
+  >
+    <v-app 
+      id="inspire"
+    >
+      <v-app-bar
+        app
+      >        
+        <v-tabs
+          centered
+          class="ml-n9"
+        >
+          <v-tab
+            v-for="link in links"
+            :key="link"
+          > {{ link }}
+          </v-tab>
+        </v-tabs>
+      </v-app-bar>
+      <v-main>
+        <v-container>
+          <v-row>
+            <v-col
+              cols=""
+              lg="3"
+              md="3"
+              sm="3"                 
+            >
+              <v-card
+                elevation="4"
+              >
+                <v-card-title>Contatos</v-card-title>
+                <v-card-subtitle>Teste de validação de conhecimentos</v-card-subtitle>
+                <v-card-text>
+                  <v-container>
+                    <p class="text-justify">
+                      Esta aplicação serve para <span class="font-weight-bold">validar</span> meus conhecimentos nas variadas 
+                      ferramentas encontradas e/ou relacionadas ao ecossistema <span class="font-weight-bold"></span>Vue.js</span> 
+                      para o processo seletivo da <span class="font-weight-bold">Port Louis</span> quanto à vaga empregatícia de 
+                      <span class="font-weight-bold">Dev Jr Vue Js</span>. Meus sinceros agradecimentos à Port Louis pela 
+                      <span class="font-weight-bold">oportunidade</span> de participar desse tão importante seletivo, e pelo 
+                      desafio/teste que nos <span class="font-italic">motiva, inspira e gera muito conhecimento</span>. 
+                    </p>
+                    <p>
+                      <span class="font-weight-bold">Technologies</span>
+                      <ul>
+                        <li class="font-weight-bold">Vue.js</li>
+                        <li>Vuetify</li>                      
+                        <li>VueMask</li>
+                        <li>Localbase (IndexedDB)</li>
+                        <li>Material Design Icons</li>
+                        <li>HTML/CSS</li>  
+                        <li>JavaScript</li>
+                        <li>Controle de versão (git)</li>
+                      </ul>
+                    </p>
+                    <p>
+                      <span class="font-weight-bold">Project setup</span> <br />
+                      <span>
+                        Projeto/aplicação baseado num arquivo somente: <span class="font-weight-bold">index.html</span>, utilizando 
+                        as bibliotecas via CDN
+                      </span>
+                    </p>
+                    <p>
+                      <cite class="font-weight-bold">Todo desafio gera conhecimento</cite>
+                    </p>
+                  </v-container>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col
+              cols=""
+              lg="9"
+              md="9"
+              sm="9"
+            >
+              <v-sheet
+                min-height="70vh"
+                rounded="lg"
+                elevation="4"
+              >
+                <v-data-table
+                  :headers="headers"
+                  :items="contacts"
+                  :item-class="changeBackgroundColorRow"
+                  hide-default-footer
+                >
+                  <template 
+                    v-slot:top
+                  >
+                    <v-toolbar
+                      flat
+                    >
+                      <v-switch
+                        v-model="$vuetify.theme.dark"
+                        label="Tema Escuro"
+                        class="mt-3 text-right"
+                        inset
+                      ></v-switch>
+                      <v-spacer></v-spacer>
+                      <v-dialog
+                        v-model="app.dialogNewContact"
+                        persistent
+                        max-width="330px"
+                        @keydown.esc="closeDialog('new')"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            color="primary"
+                            class="mb-2"
+                            v-bind="attrs"
+                            v-on="on"
+                            elevation="2"
+                            rounded
+                            small
+                          >Adicionar
+                          </v-btn>
+                        </template>                        
+                        <v-card style="height: 320px;">
+                          <v-card-title 
+                            class="pb-5 primary"
+                          > 
+                            <span 
+                              class="white--text subtitle-1 font-weight-bold"
+                            > {{ dialogNewContactTitle }}
+                            </span>
+                          </v-card-title>
+                          <v-card-subtitle
+                            class="pb-2 primary"  
+                          >
+                            <span 
+                              class="white--text caption"
+                            > (Tecle ESC para sair)
+                            </span>
+                          </v-card-subtitle>
+                          <v-card-text>
+                            <v-container>
+                              <v-form
+                                ref="form"
+                                lazy-validation
+                              >
+                                <v-row>
+                                  <v-col
+                                    cols="12"
+                                    lg="12"
+                                    sm="12"
+                                    md="6"
+                                  >
+                                    <v-text-field
+                                      v-model="editedContact.name"  
+                                      :counter="28"
+                                      :rules="nameRules"
+                                      label="Nome"
+                                      required
+                                      placeholder="Irina Kaleda"
+                                    ></v-text-field>  
+                                    <v-text-field
+                                      v-model="editedContact.phone"
+                                      :count="14"
+                                      :rules="phoneRules"
+                                      label="Telefone"
+                                      required
+                                      v-mask="app.maskPhone"
+                                      placeholder="(XX) XXXX-XXXX"
+                                    ></v-text-field>
+                                  </v-col>
+                                </v-row>
+                              </v-form>
+                            </v-container>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-row>
+                              <v-col
+                                cols="1"
+                              ></v-col>
+                              <v-col 
+                                col="5"
+                              >
+                                <v-btn
+                                  class="white--text"
+                                  color="red"
+                                  elevation="2"
+                                  rounded
+                                  small
+                                  @click="closeDialog('new')"
+                                > CANCELAR
+                                  <v-icon
+                                    right
+                                  > mdi-close-octagon
+                                  </v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col
+                                col="5"                                  
+                              >
+                                <v-btn
+                                  color="primary"
+                                  elevation="2"
+                                  rounded
+                                  small
+                                  @click="save()"
+                                > SALVAR
+                                  <v-icon
+                                    right
+                                  > mdi-content-save
+                                  </v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col
+                                cols="1"
+                              ></v-col>
+                            </v-row>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                      <v-dialog
+                        v-model="app.dialogDelete"
+                        persistent
+                        max-width="330px"
+                        @keydown.esc="closeDialog('delete')"
+                      >
+                        <v-card 
+                          style="height: 180px;"
+                        >
+                          <v-card-title 
+                            class="primary"
+                          > 
+                            <span 
+                              class="white--text subtitle-1 font-weight-bold"
+                            > Excluir Contato  
+                            </span>
+                          </v-card-title>
+                          <v-card-text 
+                            class="text-center mt-3"
+                          >
+                            Deseja excluir <span class="font-weight-bold">"{{ editedContact.name }}"?</span>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-row>
+                              <v-col
+                                cols="1"
+                              ></v-col>
+                              <v-col
+                                cols="5"
+                              >
+                                <v-btn
+                                  color="primary"
+                                  @click="closeDialog('delete')"
+                                  elevation="2"
+                                  rounded
+                                  small
+                                > CANCELAR
+                                  <v-icon
+                                    right
+                                  > mdi-close-octagon
+                                  </v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col
+                                cols="5"
+                              >
+                                <v-btn
+                                  class="white--text"
+                                  color="red"
+                                  @click="deleteContactConfirm()"
+                                  elevation="2"
+                                  rounded
+                                  small
+                                > EXCLUIR
+                                  <v-icon
+                                    right
+                                  > mdi-delete
+                                  </v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col
+                                cols="1"
+                              ></v-col>
+                            </v-row>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>   
+                    </v-toolbar>
+                  </template>
+                  <template v-slot:item.actions="{ item }">
+                    <v-row>
+                      <v-col
+                        cols="12"
+                      >
+                        <v-btn
+                          color="primary"
+                          elevation="2"
+                          rounded
+                          small
+                          @click="showDialogEdit(item)"
+                        >
+                          <v-icon
+                            small
+                            class="mr-1"                            
+                          > mdi-pencil
+                          </v-icon>
+                          EDITAR
+                        </v-btn>
+                        <v-btn
+                          color="red white--text"
+                          elevation="2"
+                          rounded
+                          small
+                          @click="showDialogDelete(item)"
+                        >
+                          <v-icon
+                            class="mr-1"
+                            small                            
+                          > mdi-delete
+                          </v-icon>
+                          EXCLUIR
+                        </v-btn>
+                      </v-col> 
+                    </v-row>
+                  </template>
+                  <template v-slot:no-data>
+                    <v-alert
+                      shaped
+                      dense
+                      type="warning"
+                    > Você não possui contatos cadastrados! Comece adicionando novos contatos.  
+                    </v-alert>
+                  </template>
+                </v-data-table>
+              </v-sheet>
+            </v-col>
+            <!-- <v-col
+              cols=""
+              lg="1"
+              md="1"
+              sm="1"
+            >
+            </v-col> -->
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+    
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+  
+  <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
+  
+  <script>
+    let db = new Localbase('db')
+    
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(
+        { 
+          theme: 
+            {
+              light: true, 
+              dark: false
+            }
+        }
+      ),
+      data: {
+        app: {
+          title: 'Contatos',
+          dialogNewContact: false,
+          dialogDelete: false,
+          maskPhone: '(##) ####-####',
+          dddSaoPaulo: '11'
+        },
+        links: [
+          'Contatos'
+        ],
+        headers: [
+          {
+            text: 'NOME',
+            value: 'name'
+          },
+          {
+            text: 'TELEFONE',
+            value: 'phone',
+            align: 'center',
+            sortable: false
+          },
+          { 
+            text: '', 
+            value: 'actions',
+            align: 'center', 
+            sortable: false 
+          },
+        ],
+        contacts: [],
+        editedIndex: -1,
+        editedContact: {
+          id: 0,
+          name: '',
+          phone: ''
+        },
+        defaultContact: {
+          id: 0,
+          name: '',
+          phone: ''
+        },
+        nameRules: [ 
+          value => !!value || 'Campo requerido',
+          value => (value && value.length < 28) || 'Máximo de 28 caracteres',
+          //value => /^[a-zA-Z]{3,}(?: +[a-zA-Z]{3,})+$/.test(value) || 'Nome inválido' 
+          value => /^([a-zA-Z\u00C0-\u00FF]{3,})[-. ]?( [a-zA-Z]{2,3}|[a-zA-Z]{0})[-. ]?( [a-zA-Z\u00C0-\u00FF]{3,})[-. ]?( [a-zA-Z\u00C0-\u00FF]{3,}|[a-zA-Z\u00C0-\u00FF]{0})[-. ]?$/.test(value) || 'Nome inválido' 
+        ],
+        phoneRules: [
+          value => !!value || 'Campo requerido',
+          value => /\(?\d{2,}\)?[ -]?\d{4,}[\-\s]?\d{4}/.test(value) || 'Telefone inválido',
+        ],
+      },
+      computed: {
+        dialogNewContactTitle () {
+          return this.editedIndex === -1 ? 'Novo Contato' : 'Editar Contato'
+        }
+      },
+      created() {
+        this.getContacts()
+      },
+      methods: {
+        showDialogEdit(item) {
+          this.editedIndex = this.contacts.indexOf(item)
+          this.editedContact = Object.assign({}, item)
+          this.app.dialogNewContact = true
+        },
+        showDialogDelete(item) {
+          this.editedIndex = this.contacts.indexOf(item)
+          this.editedContact = Object.assign({}, item)
+          this.app.dialogDelete = true
+        },
+        closeDialog(dialog) {
+          if (dialog == 'new') {
+            this.app.dialogNewContact = false
+          } else {
+            this.app.dialogDelete = false
+          }             
+          this.$nextTick(() => {
+            this.editedContact = Object.assign({}, this.defaultContact)
+            this.editedIndex = -1
+            this.$refs.form.reset()
+          })
+        },
+        getContacts() {
+          db.collection('contacts')
+            .orderBy('name')
+            .get()
+            .then(contacts => {
+              this.contacts = contacts
+            })
+        },
+        save() {
+          if (this.$refs.form.validate()) {
+            if (this.editedIndex > -1) {
+              db.collection('contacts')
+                .doc({ id: this.editedContact.id })
+                .set({
+                  id: this.editedContact.id,
+                  name: this.editedContact.name,
+                  phone: this.editedContact.phone
+                })
+                .then(response => {
+                  this.getContacts()
+                  this.closeDialog('new')
+                })
+                .catch(error => {
+                  console.table(error)
+                })
+            } else {
+              this.editedContact.id = new Date().getTime()
+              db.collection('contacts')
+                .add(this.editedContact)
+                .then(response => {
+                  this.getContacts()
+                  this.closeDialog('new')
+                })
+                .catch(error => {
+                  console.table(error)
+                })
+            }
+          }
+        },                
+        deleteContactConfirm () {
+          db.collection('contacts')
+            .doc({ id: this.editedContact.id })
+            .delete()
+            .then(response => {
+              this.getContacts()
+              this.closeDialog('delete')
+            })
+            .catch(error => {
+              console.table(error)
+            })                  
+        },
+        changeBackgroundColorRow: function(item) {
+          if (this.$vuetify.theme.dark)
+            return item.phone.substring(1,3) == this.app.dddSaoPaulo ? 'grey darken-3 white--text' : ''
+          return item.phone.substring(1,3) == this.app.dddSaoPaulo ? 'blue lighten-4' : ''
+        }
+      },
+    });
+    Vue.directive('mask', VueMask.VueMaskDirective);
+  </script>
+
+</body>
+</html>
